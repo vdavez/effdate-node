@@ -7,6 +7,7 @@ var _ = require('underscore');
 var moment = require('moment');
 var holidays = require('./moment-holidays.js')
 var prompt = require('prompt');
+require('./sessionBuilder.js');
 
 // Get the list of days in session. This is from a JSON file.
 var out = [];
@@ -21,6 +22,7 @@ sDays = _.map(sDays,function(d){return moment(d.replace(/(-)(\d(?!\d))/g,"-0$2")
 
 //This gets the transmittal date
 //var transmittal = prompt("start? [form 2013-12-25]").split(/[-\/]/g);
+/*
 prompt.start();
 var property = {
   name: 'transmittal',
@@ -30,12 +32,17 @@ var property = {
 };
 
 prompt.get(property, function (err, result) {
-	var t = result.transmittal.split(/[-\/]/g);
+*/
+
+if (process.argv.length > 2) {
+	var t = process.argv[2].split(/[-\/]/g);
 	t[1] = t[1]-1;
 	out = getEffDate(t);
 	console.log("Effective Date: " + out[1]);
 	console.dir("Count: " + out[0]);
-});
+}
+else {console.log("You need to pass the transmittal argument to effdate.js")}
+//});
 
 function getEffDate(transmittal) {
 
@@ -91,6 +98,7 @@ function getNextDay(arr,val) {
 function inRecess (val) {
 	//var _recess = fs.readFileSync('recess_days.json','utf-8');
 	//iterate to check if in range
+	val = val.format("YYYY-MM-DD");
     for (var i = 0; i < _recess.length; i++) {
         var begin = moment(_recess[i].begin);
         var end = moment(_recess[i].end);
